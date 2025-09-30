@@ -6,7 +6,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload
 from googleapiclient.errors import HttpError
-
+from PyPDF2 import PdfReader
 SCOPES = ["https://www.googleapis.com/auth/drive.readonly"]
 
 
@@ -49,7 +49,22 @@ def list_files(creds):
     print(f"An error occurred: {error}")
     return None
 
+def search_files(creds, query):
+  try:
+    service = build("drive", "v3", credentials=creds)
 
+    results = (
+        
+        service.files()
+        .list(q=query,pageSize=20,fields="nextPageToken, files(id,name,mimeType)",orderBy="modifiedTime desc")
+        .execute()
+    )
+    items = results.get("files", [])
+  
+    return items
+  except HttpError as error:
+    print(f"An error occurred: {error}")
+    return None
 
 def read_file_content(creds, file_id, mime_type):
     try:
@@ -66,17 +81,17 @@ def read_file_content(creds, file_id, mime_type):
         while not done:
             status, done = downloader.next_chunk()
         file.seek(0)
+
+        if mime_type == "application/pdf":
+            reader = PdfReader(file)
+            text = []
+            for page in reader.pages:
+                text.append(page.extract_text() or "")
+            return "\n".join(text)
+
         return file.read().decode('utf-8', errors='replace')
         
     except HttpError as error:
         print(f"An error occurred: {error}")
         return None
     
-def search_files(creds, query):
-    service = build("drive", "v3", credentials=creds)
-    results = service.files().list(
-        q=f"name contains '{query}'",
-        pageSize=20,
-        fields="files(id, name, mimeType)"
-    ).execute()
-    return results.get("files", [])

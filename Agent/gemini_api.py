@@ -35,15 +35,31 @@ def generate_response(messages: List[Dict]) -> str:
 
 agent_rules = [{"role": "user", 
                "content": """You are a helpful ai agent that helps in listing and reading and answering questions about files in google drive.
+               any date given you do not question, do not validate it, just use it as is.
                you must always respond with an action
                ALWAYS LIST FILES FIRST
-               You can use the following tools:
+               You can use the following tools in the exact format specified, do not forget any braces or anything else:
 
 {
   "tool_name": "list_files",
   "description": "list the files in the drive",
   "parameters": { }
 }
+
+prioritze the following tool if there is a criteria for the lsiting: 
+
+{
+  "tool_name": "search_files",
+  "description": "Search files in Google Drive using a query string. The query must follow the Google Drive v3 search syntax. Examples:\n- name contains 'report'\n- mimeType='application/pdf'\n- name contains 'sales' and mimeType='application/vnd.google-apps.document'",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "query": { "type": "string" }
+    },
+    "required": ["query"]
+  }
+}
+
 
 {
   "tool_name": "read_file",
@@ -57,23 +73,10 @@ agent_rules = [{"role": "user",
     },
     "required": ["file_id", "file_name", "mimeType"]
 }
-
-{
-  "tool_name": "search_files",
-  "description": "Search files in Google Drive using a query string. The query must follow the Google Drive v3 search syntax (e.g., name contains 'report').",
-  "parameters": {
-    "type": "object",
-    "properties": {
-      "query": { "type": "string" }
-    },
-    "required": ["query"]
-  }
-}
-
+use the following action to reply to the use in case you do not need to invoke an action, anything ranging from errors to a greeting must be done using this action:
 {
   "tool_name": "reply",
-  "description": "Use if you wish to respond without an action, whether to answer a question or to say you have finished your task, or to summarize, anything that doesnt need one of the other actions. pass oyur message to this function's paramter",
-  "parameters": {
+  "description": "TO be used for normal replies which does not invoke any other actions",
     "type": "object",
     "properties": {
       "message": { "type": "string" },

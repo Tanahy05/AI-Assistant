@@ -11,8 +11,7 @@ def main():
         user_input = input("User: ")
         memory.append({"role": "user", "content": user_input})
         prompt = gapi.agent_rules + memory
-        response = gapi.generate_response(prompt)
-
+        print(f"Raw response: {response}")
         max_tries=5
         tries=0
         while(tries<max_tries):
@@ -60,7 +59,7 @@ def main():
                 file_id = parameters.get("file_id", "")
                 mime_type = parameters.get("mimeType", "")
                 tool_response = gd.read_file_content(creds,file_id,mime_type)
-                print(f"File content: {tool_response}")
+                print(f"File content:\n {tool_response}")
 
             elif tool_name == "reply":
                 message = parameters.get("message", "")
@@ -68,11 +67,16 @@ def main():
                 print(f"Agent Reply: {tool_response}")
 
             elif tool_name == "search_files":
-                query = parameters.get("query", "")
+                query = parameters.get("query", "").strip()
+
+                if (query.startswith("'") and query.endswith("'")) or (query.startswith('"') and query.endswith('"')):
+                    query = query[1:-1]
+
                 tool_response = gd.search_files(creds, query)
+
                 for file in tool_response:
                     print(f"Found file: {file['name']} (mimeType: {file['mimeType']})")
-                    
+
             elif tool_name == "terminate":
                 print("Agent signaled termination. Ending session.")
                 break
