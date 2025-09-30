@@ -11,7 +11,7 @@ def main():
         user_input = input("User: ")
         memory.append({"role": "user", "content": user_input})
         prompt = gapi.agent_rules + memory
-        print(f"Raw response: {response}")
+        response = gapi.generate_response(prompt)
         max_tries=5
         tries=0
         while(tries<max_tries):
