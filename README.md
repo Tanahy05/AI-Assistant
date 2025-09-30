@@ -5,14 +5,20 @@ This project implements an intelligent agent that wraps around the Google Gemini
 ---
 
 ## 📝 Setup Instructions
+1. **Clone the repository**  
+```bash
+git clone <repo-url>
+cd <repo-folder>
+```
+After cloning this repo. you should set up a vertual environment 
 
-After pulling this repo. you should set up a vertual environment 
+```bash 
 -python -m venv venv
-
+```
 then all dependancies needed can be installed by doing the following:
-
+```bash
 pip install -r requiremnts.txt
-
+```
 For this code to work, the .env file containing the pai keys and the credentials.json is neeeded, altough not provided in this repo for security purposes
 
 ## 🚀 Project Overview
@@ -53,11 +59,5 @@ The system dynamically combines user queries, retrieved file content, and agent 
    - PDF parsing falls back safely if text extraction fails.  
    - Queries with dates in the future are automatically clamped to the current UTC date to prevent “cannot look into the future” errors.  
 
----
 
 
-
-1. **Clone the repository**  
-```bash
-git clone <repo-url>
-cd <repo-folder>
