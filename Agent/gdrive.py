@@ -71,3 +71,12 @@ def read_file_content(creds, file_id, mime_type):
     except HttpError as error:
         print(f"An error occurred: {error}")
         return None
+    
+def search_files(creds, query):
+    service = build("drive", "v3", credentials=creds)
+    results = service.files().list(
+        q=f"name contains '{query}'",
+        pageSize=20,
+        fields="files(id, name, mimeType)"
+    ).execute()
+    return results.get("files", [])

@@ -13,31 +13,34 @@ def main():
         prompt = gapi.agent_rules + memory
         response = gapi.generate_response(prompt)
 
-        
-        raw_response = response.strip()
-        candidate = raw_response
+        max_tries=5
+        tries=0
+        while(tries<max_tries):
+            raw_response = response.strip()
+            candidate = raw_response
 
 
-        if "```" in raw_response:
-            parts = raw_response.split("```")
-            if len(parts) > 1:
-                candidate = parts[1].strip()
-            else:
-                candidate = raw_response
+            if "```" in raw_response:
+                parts = raw_response.split("```")
+                if len(parts) > 1:
+                    candidate = parts[1].strip()
+                else:
+                    candidate = raw_response
 
 
-        if candidate.lower().startswith("json"):
-            candidate = candidate[4:].strip()
+            if candidate.lower().startswith("json"):
+                candidate = candidate[4:].strip()
 
-        match = re.search(r'\{.*\}', candidate, re.DOTALL)
-        if match:
-            candidate = match.group(0)
+            match = re.search(r'\{.*\}', candidate, re.DOTALL)
+            if match:
+                candidate = match.group(0)
 
-        try:
-            response = json.loads(candidate)
-        except Exception as e:
-            print(f"Error parsing response: {e}")
-            response = {}
+            try:
+                response = json.loads(candidate)
+                break
+            except Exception as e:
+                print(f"Error parsing response: {e}")
+                response = {}
 
 
 
@@ -64,6 +67,12 @@ def main():
                 tool_response = gapi.reply(message)
                 print(f"Agent Reply: {tool_response}")
 
+            elif tool_name == "search_files":
+                query = parameters.get("query", "")
+                tool_response = gd.search_files(creds, query)
+                for file in tool_response:
+                    print(f"Found file: {file['name']} (mimeType: {file['mimeType']})")
+                    
             elif tool_name == "terminate":
                 print("Agent signaled termination. Ending session.")
                 break

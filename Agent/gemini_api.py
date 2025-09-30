@@ -38,6 +38,7 @@ agent_rules = [{"role": "user",
                you must always respond with an action
                ALWAYS LIST FILES FIRST
                You can use the following tools:
+
 {
   "tool_name": "list_files",
   "description": "list the files in the drive",
@@ -56,6 +57,19 @@ agent_rules = [{"role": "user",
     },
     "required": ["file_id", "file_name", "mimeType"]
 }
+
+{
+  "tool_name": "search_files",
+  "description": "Search files in Google Drive using a query string. The query must follow the Google Drive v3 search syntax (e.g., name contains 'report').",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "query": { "type": "string" }
+    },
+    "required": ["query"]
+  }
+}
+
 {
   "tool_name": "reply",
   "description": "Use if you wish to respond without an action, whether to answer a question or to say you have finished your task, or to summarize, anything that doesnt need one of the other actions. pass oyur message to this function's paramter",
@@ -67,9 +81,10 @@ agent_rules = [{"role": "user",
     },
     "required": ["message"]
 }
+
 {
   "tool_name": "terminate",
-  "description": "Ends the current conversation or loop. The agent should call this when its task is complete.",
+  "description": "Ends the current conversation or loop. The agent should call this when the user is done.",
   "parameters": {}
 }
 
