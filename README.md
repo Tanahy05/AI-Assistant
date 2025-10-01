@@ -53,12 +53,11 @@ The system dynamically combines user queries, retrieved file content, and agent 
 
 2. **Dynamic Context Injection**  
    - Retrieved file content is appended to the conversation memory before being sent to Gemini.  
-   - Queries can be generated dynamically by the AI, but **fixed filters** (like date ranges) can be enforced in code to avoid API errors.  
+   - Queries can be generated dynamically by the AI
 
 3. **Error Handling & Robustness**  
    - Malformed AI JSON responses are retried up to 5 times.  
    - PDF parsing falls back safely if text extraction fails.  
-   - Queries with dates in the future are automatically clamped to the current UTC date to prevent “cannot look into the future” errors.  
 
 
 
