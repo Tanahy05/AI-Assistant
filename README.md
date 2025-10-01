@@ -13,7 +13,7 @@ cd <repo-folder>
 After cloning this repo. you should set up a vertual environment 
 
 ```bash 
--python -m venv venv
+python -m venv venv
 ```
 then all dependancies needed can be installed by doing the following:
 ```bash
