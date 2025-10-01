@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import scrolledtext
 from assistant import Assistant  # Your backend class
-
+import threading
 
 class AssistantGUI:
     def __init__(self, root):
@@ -60,7 +60,7 @@ class AssistantGUI:
 
     def format_response(self, response):
         """Format assistant responses like the CLI output."""
-        # Case: list of files (list of dicts with 'name' + 'mimeType')
+        
         if isinstance(response, list) and all(isinstance(f, dict) for f in response):
             formatted = []
             for i, file in enumerate(response, start=1):
@@ -69,11 +69,10 @@ class AssistantGUI:
                 formatted.append(f"{i}) {name}, mimeType: {mime}")
             return "\n".join(formatted)
 
-        # Case: dictionary (fallback → key: value lines)
         if isinstance(response, dict):
             return "\n".join(f"{k}: {v}" for k, v in response.items())
 
-        # Default: plain string
+    
         return str(response)
 
     def send_message(self, event=None):
@@ -84,14 +83,18 @@ class AssistantGUI:
 
         self.add_message(user_input, sender="user")
         self.input_field.delete(0, tk.END)
+        threading.Thread(target=self.get_response, args=(user_input,)).start()
+
+    def get_response(self, user_input):
 
         response = self.assistant.process_input(user_input)
 
         if response == "TERMINATE":
-            self.add_message("Session ended by Assistant.", sender="model")
-            self.root.quit()
+            self.root.after(0,lambda: self.add_message("Session ended by Assistant.", sender="model"))
+            self.root.after(0,self.root.quit())
         elif response:
             formatted = self.format_response(response)
-            self.add_message(formatted, sender="model")
+            self.root.after(0, lambda: self.add_message(formatted, sender="model"))
+
 
 

@@ -37,7 +37,6 @@ agent_rules = [{"role": "user",
                "content": """You are a helpful ai agent that helps in listing and reading and answering questions about files in google drive.
                any date given you do not question, do not validate it, just use it as is.
                you must always respond with an action
-               ALWAYS LIST FILES FIRST
                You can use the following tools in the exact format specified, do not forget any braces or anything else:
 
 {
