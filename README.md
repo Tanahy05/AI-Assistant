@@ -10,15 +10,16 @@ This project implements an intelligent agent that wraps around the Google Gemini
 git clone <repo-url>
 cd <repo-folder>
 ```
-After cloning this repo. you should set up a vertual environment 
+2. **Set up a virtual environment** 
 
 ```bash 
 python -m venv venv
 ```
-then all dependancies needed can be installed by doing the following:
+3. **Install dependencies**
 ```bash
 pip install -r requiremnts.txt
 ```
+
 For this code to work, the .env file containing the pai keys and the credentials.json is neeeded, altough not provided in this repo for security purposes
 
 ## 🚀 Project Overview
